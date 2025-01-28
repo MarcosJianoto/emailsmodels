@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.emailsmodels.dto.CategoryDTO;
 import com.emailsmodels.dto.EmailsTemplateDTO;
 import com.emailsmodels.entities.Category;
 import com.emailsmodels.entities.EmailsTemplate;
@@ -110,21 +109,23 @@ public class EmailsTemplateService {
 		return emailsTemplateDTO;
 	}
 
-	public List<CategoryDTO> getCategory() {
-		List<Category> findAllCategory = categoryRepository.findAll();
-		List<CategoryDTO> getCategoryList = new ArrayList<>();
+	public List<EmailsTemplateDTO> getTemplatesByCategory(Integer categoryId) {
 
-		if (!findAllCategory.isEmpty()) {
+		List<EmailsTemplate> emailsTemplateByCategory = emailsTemplateRepository.findByCategory_Id(categoryId);
+		List<EmailsTemplateDTO> emailsTemplateListByCategory = new ArrayList<>();
 
-			for (Category cat : findAllCategory) {
-				CategoryDTO category = new CategoryDTO();
-				category.setId(cat.getId());
-				category.setName(cat.getName());
-				getCategoryList.add(category);
-			}
+		for (EmailsTemplate emailsByCategory : emailsTemplateByCategory) {
+			EmailsTemplateDTO emailsTemplateDTO = new EmailsTemplateDTO();
+			emailsTemplateDTO.setId(emailsByCategory.getId());
+			emailsTemplateDTO.setEmailAssunt(emailsByCategory.getEmailAssunt());
+			emailsTemplateDTO.setBodyText(emailsByCategory.getBodyText());
+			emailsTemplateDTO.setCreatedAt(emailsByCategory.getCreatedAt());
+			emailsTemplateDTO.setUpdatedAt(emailsByCategory.getUpdatedAt());
+			emailsTemplateDTO.setCategory(emailsByCategory.getCategory().getId());
+			emailsTemplateListByCategory.add(emailsTemplateDTO);
 		}
+		return emailsTemplateListByCategory;
 
-		return getCategoryList;
 	}
 
 	public void deleteCategory(Integer id) {
